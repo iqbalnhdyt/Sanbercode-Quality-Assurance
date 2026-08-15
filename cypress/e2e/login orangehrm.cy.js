@@ -58,8 +58,8 @@ describe('OrangeHRM - Login Feature', () => {
     cy.get('.oxd-topbar-header-breadcrumb')
       .should('contain', 'Dashboard');
   });
-  
-  it('TC08 - Memastikan dapat Logout', () => {
+
+  it('TC08 - Memastikan berhasil Logout', () => {
     cy.get('input[name="username"]')
       .should('be.visible')
       .type('Admin');
