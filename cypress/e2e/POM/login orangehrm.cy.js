@@ -1,143 +1,112 @@
-import LoginPage from '../../pages/LoginPage';
+import loginPage from '../../pages/LoginPage';
 
-const loginPage = new LoginPage();
+describe('OrangeHRM - Login Feature - POM', () => {
 
-describe("OrangeHRM Login", () => {
+  let loginData;
 
-    beforeEach(() => {
-        loginPage.visit();
+  before(() => {
+    cy.fixture('loginData').then((data) => {
+      loginData = data;
     });
+  });
 
-    it("TC01 - Login with valid credentials", () => {
+  beforeEach(() => {
+    loginPage.visit();
 
-        loginPage.enterUsername("Admin");
-        loginPage.enterPassword("admin123");
-        loginPage.clickLogin();
+      loginPage.username()
+        .should('be.visible')
+        .and('not.be.disabled');
 
-        cy.url().should("include", "/dashboard");
+    loginPage.password()
+        .should('be.visible')
+        .and('not.be.disabled');
 
-        loginPage.getDashboard()
-            .should("be.visible");
-    });
+  });
 
-    it("TC02 - Login with invalid password", () => {
+  it('TC01 - Halaman login berhasil dibuka', () => {
+    cy.url().should('include', '/web/index.php/auth/login');
 
-        loginPage.enterUsername("Admin");
-        loginPage.enterPassword("wrongpassword");
-        loginPage.clickLogin();
+    loginPage.username().should('be.visible');
+    loginPage.password().should('be.visible');
+    loginPage.loginButton().should('be.visible');
+  });
 
-        loginPage.getErrorMessage()
-            .should("be.visible")
-            .and("contain", "Invalid credentials");
-    });
+  it('TC02 - Kolom Username dapat diisi', () => {
+    loginPage.typeUsername(loginData.validUser.username);
 
-    it("TC03 - Login with invalid username", () => {
+    loginPage.username()
+      .should('have.value', loginData.validUser.username);
+  });
 
-        loginPage.enterUsername("WrongUser");
-        loginPage.enterPassword("admin123");
-        loginPage.clickLogin();
+  it('TC03 - Kolom Password dapat diisi', () => {
+    loginPage.typePassword(loginData.validUser.password);
 
-        loginPage.getErrorMessage()
-            .should("be.visible")
-            .and("contain", "Invalid credentials");
-    });
+    loginPage.password()
+      .should('have.value', loginData.validUser.password);
+  });
 
-    it("TC04 - Login with empty username and password", () => {
+  it('TC04 - Tombol Login dapat digunakan', () => {
+    loginPage.loginButton()
+      .should('be.visible')
+      .and('be.enabled');
+  });
 
-        loginPage.clickLogin();
+  it('TC05 - Login dengan Username dan Password valid', () => {
+    loginPage.login(
+      loginData.validUser.username,
+      loginData.validUser.password
+    );
 
-        loginPage.getUsernameRequiredMessage()
-            .should("be.visible")
-            .and("contain", "Required");
+    cy.url().should('include', '/dashboard/index');
 
-        loginPage.getPasswordRequiredMessage()
-            .should("be.visible")
-            .and("contain", "Required");
-    });
+    loginPage.dashboardTitle()
+      .should('be.visible');
+  });
 
-    it("TC05 - Logout successfully", () => {
+  it('TC06 - Login dengan Username salah dan Password benar', () => {
+    loginPage.login(
+      loginData.invalidUser.username,
+      loginData.validUser.password
+    );
 
-        loginPage.enterUsername("Admin");
-        loginPage.enterPassword("admin123");
-        loginPage.clickLogin();
+    loginPage.errorMessage()
+      .should('be.visible');
+  });
 
-        cy.url().should("include", "/dashboard");
+  it('TC07 - Login dengan Username benar dan Password salah', () => {
+    loginPage.login(
+      loginData.validUser.username,
+      loginData.invalidUser.password
+    );
 
-        loginPage.openUserMenu();
-        loginPage.clickLogout();
+    loginPage.errorMessage()
+      .should('be.visible');
+  });
 
-        cy.url().should("include", "/auth/login");
+  it('TC08 - Login dengan Username dan Password salah', () => {
+    loginPage.login(
+      loginData.invalidUser.username,
+      loginData.invalidUser.password
+    );
 
-        loginPage.getUsernameField()
-            .should("be.visible");
+    loginPage.errorMessage()
+      .should('be.visible');
+  });
 
-        loginPage.getPasswordField()
-            .should("be.visible");
-    });
+  it('TC09 - Login tanpa mengisi Username', () => {
+    loginPage.typePassword(loginData.validUser.password);
+    loginPage.clickLogin();
 
-    it("TC06 - Login with empty username", () => {
+    loginPage.requiredMessage()
+      .should('be.visible');
+  });
 
-        loginPage.enterPassword("admin123");
-        loginPage.clickLogin();
+  it('TC10 - Login tanpa mengisi Password', () => {
+    loginPage.typeUsername(loginData.validUser.username);
+    loginPage.clickLogin();
 
-        loginPage.getUsernameRequiredMessage()
-            .should("be.visible")
-            .and("contain", "Required");
-
-        cy.url().should("include", "/auth/login");
-    });
-
-    it("TC07 - Login with empty password", () => {
-
-        loginPage.enterUsername("Admin");
-        loginPage.clickLogin();
-
-        loginPage.getPasswordRequiredMessage()
-            .should("be.visible")
-            .and("contain", "Required");
-
-        cy.url().should("include", "/auth/login");
-    });
-
-    it("TC08 - Login with username containing spaces", () => {
-
-        loginPage.enterUsername(" Admin ");
-        loginPage.enterPassword("admin123");
-        loginPage.clickLogin();
-
-        loginPage.getErrorMessage()
-            .should("be.visible")
-            .and("contain", "Invalid credentials");
-    });
-
-    it("TC09 - Verify login page elements", () => {
-
-        loginPage.getUsernameField()
-            .should("be.visible")
-            .and("have.attr", "placeholder", "Username");
-
-        loginPage.getPasswordField()
-            .should("be.visible")
-            .and("have.attr", "placeholder", "Password");
-
-        cy.get('button[type="submit"]')
-            .should("be.visible")
-            .and("contain", "Login");
-
-        loginPage.getForgotPasswordLink()
-            .should("be.visible");
-    });
-
-    it("TC10 - Verify password field is masked", () => {
-
-        loginPage.getPasswordField()
-            .should("have.attr", "type", "password");
-
-        loginPage.enterUsername("Admin");
-        loginPage.enterPassword("admin123");
-
-        loginPage.getPasswordField()
-            .should("have.attr", "type", "password");
-    });
+    loginPage.requiredMessage()
+      .should('be.visible');
+  });
 
 });

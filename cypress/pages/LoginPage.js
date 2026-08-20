@@ -1,65 +1,58 @@
 class LoginPage {
 
-    visit() {
-        cy.visit("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+  visit() {
+    cy.visit('/web/index.php/auth/login');
+  }
+
+  username() {
+    return cy.get('input[name="username"]');
+  }
+
+  password() {
+    return cy.get('input[name="password"]');
+  }
+
+  loginButton() {
+    return cy.get('button[type="submit"]');
+  }
+
+  errorMessage() {
+    return cy.contains('Invalid credentials');
+  }
+
+  requiredMessage() {
+    return cy.contains('Required');
+  }
+
+  dashboardTitle() {
+    return cy.contains('Dashboard');
+  }
+
+  typeUsername(username) {
+        this.username()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .clear()
+     .type(username);
     }
 
-    enterUsername(username) {
-        cy.get('input[name="username"]')
-            .clear()
-            .type(username);
+  typePassword(password) {
+    this.password()
+        .should('be.visible')
+        .and('not.be.disabled')
+        .clear()
+        .type(password);
     }
 
-    enterPassword(password) {
-        cy.get('input[name="password"]')
-            .clear()
-            .type(password);
-    }
+  clickLogin() {
+    this.loginButton().click();
+  }
 
-    clickLogin() {
-        cy.get('button[type="submit"]').click();
-    }
-
-    getErrorMessage() {
-        return cy.get(".oxd-alert-content-text");
-    }
-
-    getUsernameRequiredMessage() {
-        return cy.get('input[name="username"]')
-            .parents(".oxd-input-group")
-            .find(".oxd-input-group__message");
-    }
-
-    getPasswordRequiredMessage() {
-        return cy.get('input[name="password"]')
-            .parents(".oxd-input-group")
-            .find(".oxd-input-group__message");
-    }
-
-    getDashboard() {
-        return cy.get(".oxd-topbar-header-breadcrumb");
-    }
-
-    openUserMenu() {
-        cy.get(".oxd-userdropdown-tab").click();
-    }
-
-    clickLogout() {
-        cy.contains("Logout").click();
-    }
-
-    getForgotPasswordLink() {
-        return cy.get(".orangehrm-login-forgot-header");
-    }
-
-    getUsernameField() {
-        return cy.get('input[name="username"]');
-    }
-
-    getPasswordField() {
-        return cy.get('input[name="password"]');
-    }
-
+  login(username, password) {
+    this.typeUsername(username);
+    this.typePassword(password);
+    this.clickLogin();
+  }
 }
 
-export default LoginPage;
+export default new LoginPage();
