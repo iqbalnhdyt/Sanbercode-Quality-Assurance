@@ -8,9 +8,16 @@ class LoginPage {
       }
     );
 
-    cy.get('body', { timeout: 20000 })
+    this.username()
+      .should('be.visible');
+
+    this.password()
+      .should('be.visible');
+
+    this.loginButton()
       .should('be.visible');
   }
+
 
   username() {
     return cy.get(
@@ -19,12 +26,14 @@ class LoginPage {
     );
   }
 
+
   password() {
     return cy.get(
       'input[name="password"]',
       { timeout: 20000 }
     );
   }
+
 
   loginButton() {
     return cy.get(
@@ -33,12 +42,14 @@ class LoginPage {
     );
   }
 
+
   errorMessage() {
     return cy.get(
       '.oxd-alert-content-text',
       { timeout: 20000 }
     );
   }
+
 
   requiredMessage() {
     return cy.get(
@@ -47,12 +58,14 @@ class LoginPage {
     );
   }
 
+
   typeUsername(username) {
     this.username()
       .should('be.visible')
       .clear()
       .type(username);
   }
+
 
   typePassword(password) {
     this.password()
@@ -61,11 +74,14 @@ class LoginPage {
       .type(password);
   }
 
+
   clickLogin() {
     this.loginButton()
       .should('be.visible')
+      .and('not.be.disabled')
       .click();
   }
+
 
   login(username, password) {
     this.typeUsername(username);

@@ -85,8 +85,15 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
     directoryPage.clickSearch();
 
     cy.wait('@directorySearch')
-      .its('request.method')
-      .should('eq', 'GET');
+    .then((interception) => {
+
+      expect(interception.request.method)
+        .to.eq('GET');
+
+      expect(interception.response.statusCode)
+        .to.eq(200);
+
+    });
 
   });
 

@@ -1,19 +1,44 @@
 import loginPage from '../../pages/LoginPage';
 import recruitmentPage from '../../pages/RecruitmentPage';
 
-describe('OrangeHRM - Final Project Recruitment POM', () => {
+describe('Final Project - OrangeHRM Recruitment - POM', () => {
+
+  let loginData;
+  let recruitmentData;
+
+  before(() => {
+
+    cy.fixture('loginData').then((data) => {
+      loginData = data;
+    });
+
+    cy.fixture('recruitmentData').then((data) => {
+      recruitmentData = data;
+    });
+
+  });
+
 
   beforeEach(() => {
 
-    cy.on('uncaught:exception', () => {
-      return false;
+    cy.on('uncaught:exception', (err) => {
+
+      if (
+        err.message.includes('nextSibling') ||
+        err.message.includes('Cannot read properties of undefined') ||
+        err.message.includes('Cannot read properties of null')
+      ) {
+        return false;
+      }
+
     });
+
 
     loginPage.visit();
 
     loginPage.login(
-      'Admin',
-      'admin123'
+      loginData.validUser.username,
+      loginData.validUser.password
     );
 
     cy.url({ timeout: 20000 })
@@ -26,44 +51,99 @@ describe('OrangeHRM - Final Project Recruitment POM', () => {
 
   });
 
-
   it('TC01 - Menu Recruitment berhasil dibuka', () => {
+
+    cy.intercept(
+      'GET',
+      '**/api/v2/recruitment/candidates*'
+    ).as('candidateList');
+
+    recruitmentPage.candidatesTab()
+      .click();
+
+    cy.wait('@candidateList')
+      .then((interception) => {
+
+        expect(interception.request.method)
+          .to.eq('GET');
+
+        expect(interception.response.statusCode)
+          .to.eq(200);
+
+      });
 
     recruitmentPage.pageTitle()
       .should('be.visible');
 
   });
 
-
   it('TC02 - Tab Candidates dapat diakses', () => {
+
+    cy.intercept(
+      'GET',
+      '**/api/v2/recruitment/candidates*'
+    ).as('candidatesRequest');
 
     recruitmentPage.candidatesTab()
       .should('be.visible')
       .click();
 
+    cy.wait('@candidatesRequest')
+      .its('request.method')
+      .should('eq', 'GET');
+
   });
 
-
   it('TC03 - Tab Vacancies dapat diakses', () => {
+
+    cy.intercept(
+      'GET',
+      '**/api/v2/recruitment/vacancies*'
+    ).as('vacanciesRequest');
 
     recruitmentPage.vacanciesTab()
       .should('be.visible')
       .click();
 
+    cy.wait('@vacanciesRequest')
+      .then((interception) => {
+
+        expect(interception.request.method)
+          .to.eq('GET');
+
+        expect(interception.response.statusCode)
+          .to.eq(200);
+
+      });
+
   });
 
+  it('TC04 - Form Add Candidate berhasil dibuka', () => {
 
-  it('TC04 - Tombol Add Candidate dapat diklik', () => {
+    cy.intercept(
+      'GET',
+      '**/recruitment/addCandidate*'
+    ).as('addCandidatePage');
 
     recruitmentPage.addButton()
       .should('be.visible')
       .click();
 
+    cy.wait('@addCandidatePage');
+
     cy.url()
       .should('include', '/recruitment/addCandidate');
 
-  });
+    recruitmentPage.candidateNameInput()
+      .should('be.visible');
 
+    recruitmentPage.lastNameInput()
+      .should('be.visible');
+
+    recruitmentPage.emailInput()
+      .should('be.visible');
+
+  });
 
   it('TC05 - First Name wajib diisi', () => {
 
@@ -78,72 +158,48 @@ describe('OrangeHRM - Final Project Recruitment POM', () => {
 
   });
 
-
-  it('TC06 - Candidate dapat diisi', () => {
+  it('TC06 - Data Candidate dapat diisi', () => {
 
     recruitmentPage.addButton()
       .click();
 
     recruitmentPage.candidateNameInput()
-      .type('Iqbal');
+      .type(recruitmentData.candidate.firstName);
+
+    recruitmentPage.middleNameInput()
+      .type(recruitmentData.candidate.middleName);
 
     recruitmentPage.lastNameInput()
-      .type('Hidayat');
+      .type(recruitmentData.candidate.lastName);
 
     recruitmentPage.emailInput()
-      .type('iqbaltest@example.com');
+      .type(recruitmentData.candidate.email);
+
+    recruitmentPage.contactNumberInput()
+      .type(recruitmentData.candidate.contactNumber);
+
 
     recruitmentPage.candidateNameInput()
-      .should('have.value', 'Iqbal');
+      .should(
+        'have.value',
+        recruitmentData.candidate.firstName
+      );
+
+    recruitmentPage.emailInput()
+      .should(
+        'have.value',
+        recruitmentData.candidate.email
+      );
 
   });
 
-
-  it('TC07 - Middle Name dapat diisi', () => {
-
-    recruitmentPage.addButton()
-      .click();
-
-    recruitmentPage.middleNameInput()
-      .type('Nur');
-
-    recruitmentPage.middleNameInput()
-      .should('have.value', 'Nur');
-
-  });
-
-
-  it('TC08 - Contact Number dapat diisi', () => {
-
-    recruitmentPage.addButton()
-      .click();
-
-    recruitmentPage.contactNumberInput()
-      .type('081234567890');
-
-    recruitmentPage.contactNumberInput()
-      .should('have.value', '081234567890');
-
-  });
-
-
-  it('TC09 - Tombol Cancel tersedia', () => {
+  it('TC07 - Tombol Cancel kembali ke halaman Candidate', () => {
 
     recruitmentPage.addButton()
       .click();
 
     recruitmentPage.cancelButton()
-      .should('be.visible');
-
-  });
-
-
-  it('TC10 - Tombol Cancel kembali ke halaman Candidate', () => {
-
-    recruitmentPage.addButton()
-      .click();
-
-    recruitmentPage.cancelButton()
+      .should('be.visible')
       .click();
 
     cy.url()
@@ -151,31 +207,14 @@ describe('OrangeHRM - Final Project Recruitment POM', () => {
 
   });
 
-
-  it('TC11 - Tombol Save tersedia', () => {
+  it('TC08 - Tombol Save tersedia pada Add Candidate', () => {
 
     recruitmentPage.addButton()
       .click();
 
     recruitmentPage.saveButton()
-      .should('be.visible');
-
-  });
-
-
-  it('TC12 - Form Add Candidate berhasil dibuka', () => {
-
-    recruitmentPage.addButton()
-      .click();
-
-    recruitmentPage.candidateNameInput()
-      .should('be.visible');
-
-    recruitmentPage.lastNameInput()
-      .should('be.visible');
-
-    recruitmentPage.saveButton()
-      .should('be.visible');
+      .should('be.visible')
+      .and('not.be.disabled');
 
   });
 

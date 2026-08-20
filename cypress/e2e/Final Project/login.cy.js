@@ -83,6 +83,17 @@ describe('Final Project - OrangeHRM Login - POM', () => {
       loginData.validUser.password
     );
 
+    cy.wait('@loginValid')
+    .then((interception) => {
+
+      expect(interception.request.method)
+        .to.eq('POST');
+
+      expect(interception.response.statusCode)
+        .to.eq(302);
+
+    });
+    
     cy.url({ timeout: 20000 })
       .should('include', '/dashboard');
 
