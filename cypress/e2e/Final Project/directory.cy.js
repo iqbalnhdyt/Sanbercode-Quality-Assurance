@@ -45,8 +45,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC01
   it('TC01 - Halaman Directory berhasil dibuka', () => {
 
     cy.url()
@@ -63,8 +61,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC02
   it('TC02 - Kolom Employee Name dapat diisi', () => {
 
     directoryPage.typeEmployeeName(
@@ -79,8 +75,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC03
   it('TC03 - Tombol Search dapat digunakan', () => {
 
     cy.intercept(
@@ -96,8 +90,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC04
   it('TC04 - Tombol Reset dapat digunakan', () => {
 
     directoryPage.typeEmployeeName(
@@ -120,8 +112,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC05
   it('TC05 - Pencarian Directory berhasil menampilkan data', () => {
 
     cy.intercept(
@@ -137,8 +127,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC06
   it('TC06 - Pencarian Employee yang tidak terdaftar', () => {
 
     cy.intercept(
@@ -158,8 +146,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC07
   it('TC07 - Dropdown Job Title dapat diakses', () => {
 
     directoryPage.jobTitleDropdown()
@@ -171,8 +157,6 @@ describe('Final Project - OrangeHRM Directory - POM', () => {
 
   });
 
-
-  // TC08
   it('TC08 - Dropdown Location dapat diakses', () => {
 
     directoryPage.locationDropdown()

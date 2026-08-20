@@ -27,8 +27,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC01
   it('TC01 - Halaman login berhasil dibuka', () => {
 
     cy.url()
@@ -45,8 +43,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC02
   it('TC02 - Username dapat diisi', () => {
 
     loginPage.typeUsername(
@@ -61,8 +57,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC03
   it('TC03 - Password dapat diisi', () => {
 
     loginPage.typePassword(
@@ -77,8 +71,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC04
   it('TC04 - Login berhasil dengan kredensial valid', () => {
 
     cy.intercept(
@@ -96,8 +88,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC05
   it('TC05 - Login gagal dengan username salah', () => {
 
     cy.intercept(
@@ -120,8 +110,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC06
   it('TC06 - Login gagal dengan password salah', () => {
 
     cy.intercept(
@@ -158,8 +146,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC07
   it('TC07 - Username wajib diisi', () => {
 
     loginPage.typePassword(
@@ -176,8 +162,6 @@ describe('Final Project - OrangeHRM Login - POM', () => {
 
   });
 
-
-  // TC08
   it('TC08 - Password wajib diisi', () => {
 
     loginPage.typeUsername(
