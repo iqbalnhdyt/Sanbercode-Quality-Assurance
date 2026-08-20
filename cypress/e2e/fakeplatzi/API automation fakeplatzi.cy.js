@@ -1,14 +1,14 @@
-describe('Fake API Platzi - Categories API', () => {
+describe('Fake API Platzi - API Kategori', () => {
 
   const baseUrl = 'https://api.escuelajs.co/api/v1';
 
-  let categoryId;
-  let secondCategoryId;
+  let idKategori;
+  let idKategoriKedua;
 
-  const categoryName = `Cypress Category ${Date.now()}`;
-  const secondCategoryName = `Cypress Second Category ${Date.now()}`;
+  const namaKategori = `Kategori Cypress ${Date.now()}`;
+  const namaKategoriKedua = `Kategori Cypress Kedua ${Date.now()}`;
 
-  const updatedCategoryName = `Updated Category ${Date.now()}`;
+  const namaKategoriUpdate = `Kategori Update ${Date.now()}`;
 
   before(() => {
 
@@ -16,7 +16,7 @@ describe('Fake API Platzi - Categories API', () => {
       method: 'POST',
       url: `${baseUrl}/categories`,
       body: {
-        name: categoryName,
+        name: namaKategori,
         image: 'https://placehold.co/600x400'
       }
     }).then((response) => {
@@ -24,16 +24,16 @@ describe('Fake API Platzi - Categories API', () => {
       expect(response.status).to.eq(201);
 
       expect(response.body).to.have.property('id');
-      expect(response.body.name).to.eq(categoryName);
+      expect(response.body.name).to.eq(namaKategori);
 
-      categoryId = response.body.id;
+      idKategori = response.body.id;
     });
 
     cy.request({
       method: 'POST',
       url: `${baseUrl}/categories`,
       body: {
-        name: secondCategoryName,
+        name: namaKategoriKedua,
         image: 'https://placehold.co/600x400'
       }
     }).then((response) => {
@@ -41,14 +41,15 @@ describe('Fake API Platzi - Categories API', () => {
       expect(response.status).to.eq(201);
 
       expect(response.body).to.have.property('id');
-      expect(response.body.name).to.eq(secondCategoryName);
+      expect(response.body.name).to.eq(namaKategoriKedua);
 
-      secondCategoryId = response.body.id;
+      idKategoriKedua = response.body.id;
     });
 
   });
 
-  it('TC01 - Get all categories', () => {
+
+  it('TC01 - Mengambil semua data kategori', () => {
 
     cy.request('GET', `${baseUrl}/categories`)
       .then((response) => {
@@ -64,7 +65,8 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC02 - Get category by ID', () => {
+
+  it('TC02 - Mengambil kategori berdasarkan ID 1', () => {
 
     cy.request(
       'GET',
@@ -81,7 +83,8 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC03 - Get category ID 2', () => {
+
+  it('TC03 - Mengambil kategori berdasarkan ID 2', () => {
 
     cy.request(
       'GET',
@@ -98,7 +101,8 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC04 - Get invalid category', () => {
+
+  it('TC04 - Mengambil kategori dengan ID yang tidak valid', () => {
 
     cy.request({
       method: 'GET',
@@ -114,83 +118,88 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC05 - Verify created category', () => {
+
+  it('TC05 - Memverifikasi kategori pertama berhasil dibuat', () => {
 
     cy.request(
       'GET',
-      `${baseUrl}/categories/${categoryId}`
+      `${baseUrl}/categories/${idKategori}`
     ).then((response) => {
 
       expect(response.status).to.eq(200);
 
-      expect(response.body).to.have.property('id', categoryId);
+      expect(response.body).to.have.property('id', idKategori);
 
-      expect(response.body.name).to.eq(categoryName);
+      expect(response.body.name).to.eq(namaKategori);
 
     });
 
   });
 
-  it('TC06 - Verify second created category', () => {
+
+  it('TC06 - Memverifikasi kategori kedua berhasil dibuat', () => {
 
     cy.request(
       'GET',
-      `${baseUrl}/categories/${secondCategoryId}`
+      `${baseUrl}/categories/${idKategoriKedua}`
     ).then((response) => {
 
       expect(response.status).to.eq(200);
 
-      expect(response.body).to.have.property('id', secondCategoryId);
+      expect(response.body).to.have.property('id', idKategoriKedua);
 
-      expect(response.body.name).to.eq(secondCategoryName);
+      expect(response.body.name).to.eq(namaKategoriKedua);
 
     });
 
   });
 
-  it('TC07 - Update category', () => {
+
+  it('TC07 - Memperbarui data kategori pertama', () => {
 
     cy.request({
       method: 'PUT',
-      url: `${baseUrl}/categories/${categoryId}`,
+      url: `${baseUrl}/categories/${idKategori}`,
       body: {
-        name: updatedCategoryName,
+        name: namaKategoriUpdate,
         image: 'https://placehold.co/600x400'
       }
     }).then((response) => {
 
       expect(response.status).to.eq(200);
 
-      expect(response.body).to.have.property('id', categoryId);
+      expect(response.body).to.have.property('id', idKategori);
 
-      expect(response.body.name).to.eq(updatedCategoryName);
+      expect(response.body.name).to.eq(namaKategoriUpdate);
 
     });
 
   });
 
-  it('TC08 - Verify updated category', () => {
+
+  it('TC08 - Memverifikasi kategori berhasil diperbarui', () => {
 
     cy.request(
       'GET',
-      `${baseUrl}/categories/${categoryId}`
+      `${baseUrl}/categories/${idKategori}`
     ).then((response) => {
 
       expect(response.status).to.eq(200);
 
-      expect(response.body).to.have.property('id', categoryId);
+      expect(response.body).to.have.property('id', idKategori);
 
-      expect(response.body.name).to.eq(updatedCategoryName);
+      expect(response.body.name).to.eq(namaKategoriUpdate);
 
     });
 
   });
 
-  it('TC09 - Delete first category', () => {
+
+  it('TC09 - Menghapus kategori pertama', () => {
 
     cy.request({
       method: 'DELETE',
-      url: `${baseUrl}/categories/${categoryId}`
+      url: `${baseUrl}/categories/${idKategori}`
     }).then((response) => {
 
       expect(response.status).to.be.oneOf([200, 204]);
@@ -199,11 +208,12 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC10 - Verify first category deleted', () => {
+
+  it('TC10 - Memverifikasi kategori pertama sudah terhapus', () => {
 
     cy.request({
       method: 'GET',
-      url: `${baseUrl}/categories/${categoryId}`,
+      url: `${baseUrl}/categories/${idKategori}`,
       failOnStatusCode: false
     }).then((response) => {
 
@@ -215,11 +225,12 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC11 - Delete second category', () => {
+
+  it('TC11 - Menghapus kategori kedua', () => {
 
     cy.request({
       method: 'DELETE',
-      url: `${baseUrl}/categories/${secondCategoryId}`
+      url: `${baseUrl}/categories/${idKategoriKedua}`
     }).then((response) => {
 
       expect(response.status).to.be.oneOf([200, 204]);
@@ -228,7 +239,8 @@ describe('Fake API Platzi - Categories API', () => {
 
   });
 
-  it('TC12 - Verify categories endpoint is accessible', () => {
+
+  it('TC12 - Memastikan endpoint kategori dapat diakses', () => {
 
     cy.request(
       'GET',
