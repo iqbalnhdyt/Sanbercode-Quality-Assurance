@@ -1,4 +1,4 @@
-import loginPage from '../../pages/LoginPage';
+import loginPage from '../../pages/POMLoginPage';
 
 describe('OrangeHRM - Login Feature - POM', () => {
 

@@ -1,11 +1,8 @@
-class LoginPage {
+class POMLoginPage {
 
   visit() {
     cy.visit(
-      'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login',
-      {
-        failOnStatusCode: false
-      }
+      'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'
     );
 
     cy.get('body', { timeout: 20000 })
@@ -33,6 +30,13 @@ class LoginPage {
     );
   }
 
+  forgotPassword() {
+    return cy.get(
+      '.orangehrm-login-forgot-header',
+      { timeout: 20000 }
+    );
+  }
+
   errorMessage() {
     return cy.get(
       '.oxd-alert-content-text',
@@ -47,9 +51,18 @@ class LoginPage {
     );
   }
 
+  dashboardTitle() {
+    return cy.contains(
+      'h6',
+      'Dashboard',
+      { timeout: 20000 }
+    );
+  }
+
   typeUsername(username) {
     this.username()
       .should('be.visible')
+      .and('not.be.disabled')
       .clear()
       .type(username);
   }
@@ -57,6 +70,7 @@ class LoginPage {
   typePassword(password) {
     this.password()
       .should('be.visible')
+      .and('not.be.disabled')
       .clear()
       .type(password);
   }
@@ -75,4 +89,4 @@ class LoginPage {
 
 }
 
-export default new LoginPage();
+export default new POMLoginPage();
